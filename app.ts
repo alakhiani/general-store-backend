@@ -1,15 +1,37 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
 import dotenv from 'dotenv';
+import ProductRoutes from './src/routes/product.route';
 
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT;
+app.use(cors());
+app.use(express.json());
+app.use('/product', ProductRoutes);
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Express + TypeScript Server');
-});
+// Connect to MongoDB Atlas
+const start = async (port: number, databaseUri: string) => {
+    try {
+        await mongoose.connect(databaseUri);
+        console.log('⌸ [server]: Connected to MongoDB Atlas');
+        const server = app.listen(port, () => {
+            console.log('⚡️[server]: Server is listening on port', port);
+        });
+        return server;
+    } catch (error) {
+        console.error('[server]: Error connecting to MongoDB Atlas:', error);
+    }
+};
 
-app.listen(port, () => {
-    console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-});
+const port: number = parseInt(process.env.PORT || '8000');
+const databaseUri: string = process.env.DATABASE_URI || '';
+
+// Establish the MongoDB Atlas database connection and start the Express server
+if (process.env.NODE_ENV !== 'test') {
+    // Only connect to the database when not running tests
+    start(port, databaseUri);
+}
+
+export { app, start };
