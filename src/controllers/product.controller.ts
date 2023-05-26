@@ -4,8 +4,8 @@ import { ProductService } from '../services/product.service';
 export class ProductController {
     private productService: ProductService;
 
-    constructor() {
-        this.productService = new ProductService();
+    constructor(productService: ProductService) {
+        this.productService = productService;
         // Bind the 'this' context explicitly else the product service object will be undefined
         this.getProducts = this.getProducts.bind(this);
     }
