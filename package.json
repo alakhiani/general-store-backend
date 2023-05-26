@@ -9,7 +9,8 @@
     "start": "node dist/app.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\"",
     "test": "jest --config jest.config.ts --watch --verbose",
-    "test-ci": "jest --ci"
+    "test-ci": "jest --ci",
+    "test-debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --watchAll"
   },
   "keywords": [],
   "author": "Avinash Lakhiani",

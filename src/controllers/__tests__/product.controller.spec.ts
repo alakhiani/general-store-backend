@@ -45,9 +45,6 @@ describe('When calling the ProductController getProducts method', () => {
             status: jest.fn().mockReturnThis(),
             json: jest.fn(),
         };
-
-        // (global.console.log as jest.Mock) = jest.fn();
-        // (global.console.error as jest.Mock) = jest.fn();
     });
 
     afterEach(() => {
@@ -62,17 +59,16 @@ describe('When calling the ProductController getProducts method', () => {
         (productService.getProducts as jest.MockedFunction<any>).mockResolvedValue(mockedProducts);
         const productController = new ProductController();
 
-        console.log(mockedProducts);
-
         // Act
+        // debugger; // used to set a breakpoint
         await productController.getProducts(mockRequest as Request, mockResponse as Response);
 
         // Assert
         expect(mockResponse.status).toHaveBeenCalledWith(expectedStatusCode);
-        // expect(mockResponse.status).toHaveReturnedWith(mockResponse);
-        // expect(mockResponse.json).toHaveBeenCalledWith({
-        //     status: 'success',
-        //     data: expectedResponse,
-        // });
+        expect(mockResponse.status).toHaveReturnedWith(mockResponse);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+            status: 'success',
+            data: expectedResponse,
+        });
     });
 });

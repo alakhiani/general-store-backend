@@ -10,7 +10,7 @@ export class ProductController {
         this.getProducts = this.getProducts.bind(this);
     }
 
-    public async getProducts (req: Request, res: Response) {
+    public async getProducts(req: Request, res: Response) {
         try {
             if (process.env.LOG_LEVEL === 'trace') console.log("➤ [controller]: In getProducts");
             const products = await this.productService.getProducts();
