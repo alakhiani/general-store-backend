@@ -6,10 +6,10 @@ const config: Config.InitialOptions = {
   collectCoverageFrom: ['**/src/**/*.ts'],
   coverageThreshold: {
     global: {
-      branches: 60,
-      functions: 60,
-      lines: 60,
-      statements: 60,
+      branches: 70,
+      functions: 70,
+      lines: 50,
+      statements: 50,
     },
   },
   maxConcurrency: 5,

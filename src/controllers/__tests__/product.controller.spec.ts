@@ -7,26 +7,19 @@ import { IProduct } from '../../models/product.model';
 // Chance lib to mock data
 const chance = new Chance();
 
-jest.mock('../../services/product.service', () => {
-    const mockedProductService = {
-        getProducts: jest.fn(),
-    };
-    return { ProductService: jest.fn(() => mockedProductService) };
-});
-
-describe('When calling the ProductController getProducts method', () => {
+describe('ProductController', () => {
 
     let mockRequest: Partial<Request>;
     let mockResponse: Partial<Response>;
-    let mockedProducts: Partial<IProduct>[] = [];
+    let mockProducts: Partial<IProduct>[] = [];
+    let mockProductService: ProductService;
     let productController: ProductController;
-    let productService: ProductService;
 
     beforeEach(() => {
         jest.clearAllMocks();
 
         // Mocked Data
-        mockedProducts = [
+        mockProducts = [
             {
                 name: chance.word(),
                 description: chance.sentence(),
@@ -47,45 +40,29 @@ describe('When calling the ProductController getProducts method', () => {
             json: jest.fn(),
         };
 
-        productService = new ProductService();
-        (productService.getProducts as jest.MockedFunction<any>).mockResolvedValue(mockedProducts);
-        productController = new ProductController(productService);
+        mockProductService = {
+            getProducts: jest.fn().mockResolvedValue(mockProducts),
+        } as unknown as ProductService;
+        productController = new ProductController(mockProductService);
     });
 
     test('+ve: should call ProductService.getProducts', async () => {
         // Arrange
         const expectedStatusCode = 200;
-        const expectedResponse = mockedProducts;
-
-        // Act
-        // debugger; // used to set a breakpoint
-        await productController.getProducts(mockRequest as Request, mockResponse as Response);
-
-        // Assert
-        expect(productService.getProducts).toHaveBeenCalledTimes(1);
-    });
-
-    test('+ve: should call res.status with 200 when ProductService.getProducts succeeds', async () => {
-        // Arrange
-        const expectedStatusCode = 200;
+        const expectedResponse = mockProducts;
 
         // Act
         await productController.getProducts(mockRequest as Request, mockResponse as Response);
 
         // Assert
+        expect(mockProductService.getProducts).toHaveBeenCalledTimes(1);
         expect(mockResponse.status).toHaveBeenCalledWith(expectedStatusCode);
-    });
-
-    test('+ve: should call res.json with the mocked products when ProductService.getProducts succeeds', async () => {
-        // Act
-        await productController.getProducts(mockRequest as Request, mockResponse as Response);
-
-        // Assert
+        expect(mockResponse.status).toHaveReturnedWith(mockResponse);
         expect(mockResponse.json).toHaveBeenCalledWith({
             status: 'success',
-            data: mockedProducts,
+            data: expectedResponse,
         });
-    })
+    });
 
     test('+ve: getProducts should log when LOG_LEVEL is "trace"', async () => {
         // Arrange
@@ -105,9 +82,10 @@ describe('When calling the ProductController getProducts method', () => {
         console.log = jest.fn(); // Mock console.log
 
         const mockError = new Error('Some error');
-        //        (productService.getProducts as jest.MockedFunction<any>).mockRejectedValue(mockError);
-        jest.spyOn(productService, 'getProducts').mockRejectedValue(mockError);
-        const productController = new ProductController(productService);
+        const mockProductService: ProductService = {
+            getProducts: jest.fn().mockRejectedValue(mockError),
+        } as unknown as ProductService;
+        const productController = new ProductController(mockProductService);
 
         // Act
         await productController.getProducts(mockRequest as Request, mockResponse as Response);
@@ -132,9 +110,10 @@ describe('When calling the ProductController getProducts method', () => {
         // Arrange
         const expectedStatusCode = 500;
         const mockError = new Error('Some error');
-        const productService = new ProductService();
-        (productService.getProducts as jest.MockedFunction<any>).mockRejectedValue(mockError);
-        const productController = new ProductController(productService);
+        const mockProductService: ProductService = {
+            getProducts: jest.fn().mockRejectedValue(mockError),
+        } as unknown as ProductService;
+        const productController = new ProductController(mockProductService);
 
         // Act
         await productController.getProducts(mockRequest as Request, mockResponse as Response);
