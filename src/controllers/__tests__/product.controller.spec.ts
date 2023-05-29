@@ -46,7 +46,7 @@ describe('ProductController', () => {
         productController = new ProductController(mockProductService);
     });
 
-    test('+ve: should call ProductService.getProducts', async () => {
+    test('+ve: should call ProductService.getProducts to get all the products', async () => {
         // Arrange
         const expectedStatusCode = 200;
         const expectedResponse = mockProducts;
@@ -120,5 +120,38 @@ describe('ProductController', () => {
 
         // Assert
         expect(mockResponse.status).toHaveBeenCalledWith(expectedStatusCode);
+    });
+
+    test('+ve: should create a new product', async () => {
+        // Arrange
+        let newProduct: Partial<IProduct> = {
+            name: chance.word(),
+            description: chance.sentence(),
+            price: chance.floating({ min: 0, max: 100 }),
+            imageUrl: chance.url(),
+        };
+
+        const mockRequest: Partial<Request> = {
+            body: newProduct,
+        };
+
+        const expectedStatusCode = 201;
+        const expectedResponse = {
+            status: 'success',
+            data: newProduct,
+        };
+
+        // Mock the createProduct method in the ProductService
+        const mockCreatedProduct = newProduct as IProduct;
+        mockProductService.createProduct = jest.fn().mockResolvedValue(mockCreatedProduct);
+
+        // Act
+        await productController.createProduct(mockRequest as Request, mockResponse as Response);
+
+        // Assert
+        expect(mockProductService.createProduct).toHaveBeenCalledWith(expect.objectContaining(newProduct));
+        expect(mockResponse.status).toHaveBeenCalledWith(expectedStatusCode);
+        expect(mockResponse.status).toHaveReturnedWith(mockResponse);
+        expect(mockResponse.json).toHaveBeenCalledWith(expectedResponse);
     });
 });
