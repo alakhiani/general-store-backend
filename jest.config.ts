@@ -17,6 +17,7 @@ const config: Config.InitialOptions = {
   testEnvironment: 'node',
   verbose: true,
   coverageDirectory: './coverage',
+  testRegex: '(/__tests__/.*\\.ts)$',
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: './tsconfig.json' }],
   },
