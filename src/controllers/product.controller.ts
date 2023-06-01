@@ -7,8 +7,7 @@ export class ProductController {
 
     constructor(productService: ProductService) {
         this.productService = productService;
-        // Bind the 'this' context explicitly else the product service object will be undefined
-        this.productService = productService;
+        // Bind the 'this' context explicitly else the product service object methods will be undefined
         this.getProducts = this.getProducts.bind(this);
         this.getProduct = this.getProduct.bind(this);
         this.createProduct = this.createProduct.bind(this);
@@ -106,7 +105,7 @@ export class ProductController {
     public async deleteProduct(req: Request, res: Response) {
         try {
             if (process.env.LOG_LEVEL === 'trace') console.log("➤ [controller]: In deleteProduct");
-            const product = await this.productService.deleteProduct(req.params.id);
+            await this.productService.deleteProduct(req.params.id);
             res.status(204).end();
         } catch (err: any) {
             if (process.env.LOG_LEVEL === 'trace') console.log(err);

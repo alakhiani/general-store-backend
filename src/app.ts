@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import ProductRoutes from './routes/product.route';
+import OrderRoutes from './routes/order.route';
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const app: Express = express();
 app.use(cors());
 app.use(express.json());
 app.use('/product', ProductRoutes);
+app.use('/order', OrderRoutes);
 
 // Connect to MongoDB Atlas
 const start = async (port: number, databaseUri: string) => {
