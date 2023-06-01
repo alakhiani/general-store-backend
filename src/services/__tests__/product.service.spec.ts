@@ -5,8 +5,6 @@ import { Model } from "mongoose";
 
 const chance = new Chance();
 
-
-
 describe('ProductService::getProducts', () => {
 
     let mockProducts: Partial<IProduct>[] = [];
@@ -225,7 +223,11 @@ describe('ProductService::updateProduct', () => {
 
         // Mock the Product model
         mockProductModel = {
-            findByIdAndUpdate: jest.fn().mockReturnValue({ lean: jest.fn().mockReturnValue({ exec: jest.fn().mockResolvedValue(mockUpdatedProduct) }) }),
+            findByIdAndUpdate: jest.fn().mockReturnValue({
+                lean: jest.fn().mockReturnValue({
+                    exec: jest.fn().mockResolvedValue(mockUpdatedProduct)
+                })
+            }),
         } as unknown as Model<IProduct>;
 
         productService = new ProductService(mockProductModel);
@@ -263,6 +265,34 @@ describe('ProductService::updateProduct', () => {
         // Assert
         expect(console.log).not.toHaveBeenCalled();
     });
+
+    test('-ve: should throw an error when the product ID is not found', async () => {
+        // Arrange
+        const nonExistingProductId = chance.guid();
+        const updatedProduct: Partial<IProduct> = {
+            name: 'Updated Product',
+            description: 'Updated Description',
+            price: chance.floating({ min: 0, max: 100 }),
+        };
+        const mockProductModel: Model<IProduct> = {
+            findByIdAndUpdate: jest.fn().mockReturnValue({
+                lean: jest.fn().mockReturnValue({
+                    exec: jest.fn().mockResolvedValue(null),
+                }),
+            }),
+        } as unknown as Model<IProduct>;
+        const productService = new ProductService(mockProductModel);
+
+        // Act and Assert
+        await expect(productService.updateProduct(nonExistingProductId, updatedProduct as IProduct)).rejects.toThrow(Error);
+        expect(mockProductModel.findByIdAndUpdate).toHaveBeenCalledWith(
+            nonExistingProductId,
+            updatedProduct,
+            { new: true, runValidators: true }
+        );
+    });
+
+
 });
 
 describe('ProductService::deleteProduct', () => {

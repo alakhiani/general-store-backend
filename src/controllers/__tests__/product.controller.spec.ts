@@ -120,6 +120,16 @@ describe('ProductController::getProducts', () => {
 
         // Assert
         expect(mockResponse.status).toHaveBeenCalledWith(expectedStatusCode);
+
+        // Assert
+        expect(mockProductService.getProducts).toHaveBeenCalledTimes(1);
+        expect(mockResponse.status).toHaveBeenCalledWith(expectedStatusCode);
+        expect(mockResponse.status).toHaveReturnedWith(mockResponse);
+        expect(mockResponse.json).toHaveBeenCalledWith({
+            status: 'error',
+            message: 'Products could not be retrieved.',
+            details: mockError.message,
+        });
     });
 });
 
@@ -240,7 +250,7 @@ describe('ProductController::getProduct', () => {
         expect(mockResponse.json).toHaveBeenCalledWith({
             status: 'error',
             message: 'Product could not be retrieved.',
-            details: mockError,
+            details: mockError.message,
         });
     });
 });
@@ -389,7 +399,7 @@ describe('ProductController::createProduct', () => {
         expect(mockResponse.json).toHaveBeenCalledWith({
             status: 'error',
             message: 'Product creation failed.',
-            details: mockError,
+            details: mockError.message,
         });
     });
 });
@@ -519,7 +529,7 @@ describe('ProductController::updateProduct', () => {
         expect(mockResponse.json).toHaveBeenCalledWith({
             status: 'error',
             message: 'Product update failed.',
-            details: mockError,
+            details: mockError.message,
         });
     });
 });
@@ -637,7 +647,7 @@ describe('ProductController::deleteProduct', () => {
         expect(mockResponse.json).toHaveBeenCalledWith({
             status: 'error',
             message: 'Product deletion failed.',
-            details: mockError,
+            details: mockError.message,
         });
     });
 });

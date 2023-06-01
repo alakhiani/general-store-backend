@@ -28,8 +28,20 @@ export class ProductService {
     }
 
     async updateProduct(id: string, product: IProduct): Promise<IProduct | null> {
-        const updatedProduct: IProduct | null = await this.productModel.findByIdAndUpdate(id, product, { new: true, runValidators: true }).lean().exec();
-        if (process.env.LOG_LEVEL === 'trace' && updatedProduct) console.log(`➤ [service]: Updated ${JSON.stringify(updatedProduct)}`);
+        const updatedProduct: IProduct | null = await this.productModel.findByIdAndUpdate(
+            id,
+            product,
+            { new: true, runValidators: true }
+        ).lean().exec();
+
+        if (!updatedProduct) {
+            throw new Error(`Product with id ${id} not found.`);
+        }
+
+        if (process.env.LOG_LEVEL === 'trace') {
+            console.log(`➤ [service]: Updated ${JSON.stringify(updatedProduct)}`);
+        }
+
         return updatedProduct;
     }
 

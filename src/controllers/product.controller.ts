@@ -24,12 +24,12 @@ export class ProductController {
                 status: 'success',
                 data: products
             });
-        } catch (err) {
+        } catch (err: any) {
             if (process.env.LOG_LEVEL === 'trace') console.log(err);
             res.status(500).json({
                 status: 'error',
                 message: 'Products could not be retrieved.',
-                details: err
+                details: err.message
             });
         }
     }
@@ -42,12 +42,12 @@ export class ProductController {
                 status: 'success',
                 data: product
             });
-        } catch (err) {
+        } catch (err: any) {
             if (process.env.LOG_LEVEL === 'trace') console.log(err);
             res.status(500).json({
                 status: 'error',
                 message: 'Product could not be retrieved.',
-                details: err
+                details: err.message
             });
         }
     }
@@ -75,12 +75,12 @@ export class ProductController {
                 status: 'success',
                 data: createdProduct,
             });
-        } catch (err) {
+        } catch (err: any) {
             if (process.env.LOG_LEVEL === 'trace') console.log(err);
             res.status(500).json({
                 status: 'error',
                 message: 'Product creation failed.',
-                details: err
+                details: err.message
             });
         }
     }
@@ -93,12 +93,12 @@ export class ProductController {
                 status: 'success',
                 data: product,
             });
-        } catch (err) {
+        } catch (err: any) {
             if (process.env.LOG_LEVEL === 'trace') console.log(err);
             res.status(500).json({
                 status: 'error',
                 message: 'Product update failed.',
-                details: err
+                details: err.message
             });
         }
     }
@@ -108,12 +108,12 @@ export class ProductController {
             if (process.env.LOG_LEVEL === 'trace') console.log("➤ [controller]: In deleteProduct");
             const product = await this.productService.deleteProduct(req.params.id);
             res.status(204).end();
-        } catch (err) {
+        } catch (err: any) {
             if (process.env.LOG_LEVEL === 'trace') console.log(err);
             res.status(500).json({
                 status: 'error',
                 message: 'Product deletion failed.',
-                details: err
+                details: err.message
             });
         }
     }
