@@ -189,6 +189,8 @@ describe('OrderService::getOrder', () => {
 describe('OrderService::createOrder', () => {
     let orderService: OrderService;
     let mockOrderId: string = chance.guid();
+    let mockProductId1: string = chance.guid();
+    let mockProductId2: string = chance.guid();
     let mockOrder: Partial<IOrder>;
     let mockCreatedOrder: Partial<IOrder>;
     let mockOrderModel: Model<IOrder>;
@@ -211,14 +213,19 @@ describe('OrderService::createOrder', () => {
             orderTotal: chance.floating({ min: 0, max: 100 }),
             items: [
                 {
-                    productId: chance.guid(),
+                    productId: mockProductId1,
+                    quantity: chance.integer({ min: 1, max: 10 }),
+                    price: chance.floating({ min: 0, max: 100 }),
+                },
+                {
+                    productId: mockProductId2,
                     quantity: chance.integer({ min: 1, max: 10 }),
                     price: chance.floating({ min: 0, max: 100 }),
                 },
             ],
-        },
+        };
 
-            mockCreatedOrder = { ...mockOrder, _id: mockOrderId };
+        mockCreatedOrder = { ...mockOrder, _id: mockOrderId };
 
         // Mock the Order model
         mockOrderModel = {
@@ -233,6 +240,10 @@ describe('OrderService::createOrder', () => {
         const result = await orderService.createOrder(mockOrder as IOrder);
 
         // Assert
+        expect(mockProductModel.exists).toHaveBeenCalledTimes(2);
+        expect(mockProductModel.exists).toHaveBeenCalledWith({ _id: mockProductId1 });
+        expect(mockProductModel.exists).toHaveBeenCalledWith({ _id: mockProductId2 });
+
         expect(mockOrderModel.create).toHaveBeenCalledWith(mockOrder);
         expect(result).toEqual(mockCreatedOrder);
     });
@@ -260,11 +271,31 @@ describe('OrderService::createOrder', () => {
         // Assert
         expect(console.log).not.toHaveBeenCalled();
     });
+
+    it('-ve: should throw an error if any product does not exist', async () => {
+
+        // Mock the Product model
+        const mockProductModel = {
+            exists: jest.fn().mockReturnValue(false)
+        } as unknown as Model<IProduct>;
+
+        orderService = new OrderService(mockOrderModel, mockProductModel);
+
+        await expect(orderService.createOrder(mockOrder as IOrder)).rejects.toThrow(
+            `Invalid productId '${mockProductId1}'. The product does not exist.`
+        );
+
+        expect(mockProductModel.exists).toHaveBeenCalledTimes(1);
+        expect(mockProductModel.exists).toHaveBeenCalledWith({ _id: mockProductId1 });
+        expect(mockOrderModel.create).not.toHaveBeenCalled();
+    });
 });
 
 describe('OrderService::updateOrder', () => {
     let orderService: OrderService;
     let mockOrderId: string = chance.guid();
+    let mockProductId1: string = chance.guid();
+    let mockProductId2: string = chance.guid();
     let mockOrder: Partial<IOrder>;
     let mockUpdatedOrder: Partial<IOrder>;
     let mockOrderModel: Model<IOrder>;
@@ -287,14 +318,19 @@ describe('OrderService::updateOrder', () => {
             orderTotal: chance.floating({ min: 0, max: 100 }),
             items: [
                 {
-                    productId: chance.guid(),
+                    productId: mockProductId1,
+                    quantity: chance.integer({ min: 1, max: 10 }),
+                    price: chance.floating({ min: 0, max: 100 }),
+                },
+                {
+                    productId: mockProductId2,
                     quantity: chance.integer({ min: 1, max: 10 }),
                     price: chance.floating({ min: 0, max: 100 }),
                 },
             ],
-        },
+        };
 
-            mockUpdatedOrder = { ...mockOrder, _id: mockOrderId };
+        mockUpdatedOrder = { ...mockOrder, _id: mockOrderId };
 
         // Mock the Order model
         mockOrderModel = {
@@ -313,6 +349,10 @@ describe('OrderService::updateOrder', () => {
         const result = await orderService.updateOrder(mockOrderId, mockOrder as IOrder);
 
         // Assert
+        expect(mockProductModel.exists).toHaveBeenCalledTimes(2);
+        expect(mockProductModel.exists).toHaveBeenCalledWith({ _id: mockProductId1 });
+        expect(mockProductModel.exists).toHaveBeenCalledWith({ _id: mockProductId2 });
+
         expect(mockOrderModel.findByIdAndUpdate).toHaveBeenCalledWith(mockOrderId, mockOrder, { new: true, runValidators: true });
         expect(result).toEqual(mockUpdatedOrder);
     });
@@ -341,7 +381,7 @@ describe('OrderService::updateOrder', () => {
         expect(console.log).not.toHaveBeenCalled();
     });
 
-    test('-ve: should throw an error when the order ID is not found', async () => {
+    it('-ve: should throw an error when the order ID is not found', async () => {
         // Arrange
         const nonExistingOrderId = chance.guid();
         const updatedOrder: Partial<IOrder> = {
@@ -367,7 +407,23 @@ describe('OrderService::updateOrder', () => {
         );
     });
 
+    it('-ve: should throw an error if any product does not exist', async () => {
 
+        // Mock the Product model
+        const mockProductModel = {
+            exists: jest.fn().mockReturnValue(false)
+        } as unknown as Model<IProduct>;
+
+        orderService = new OrderService(mockOrderModel, mockProductModel);
+
+        await expect(orderService.updateOrder(mockOrderId, mockOrder as IOrder)).rejects.toThrow(
+            `Invalid productId '${mockProductId1}'. The product does not exist.`
+        );
+
+        expect(mockProductModel.exists).toHaveBeenCalledTimes(1);
+        expect(mockProductModel.exists).toHaveBeenCalledWith({ _id: mockProductId1 });
+        expect(mockOrderModel.findByIdAndUpdate).not.toHaveBeenCalled();
+    });
 });
 
 describe('OrderService::deleteOrder', () => {
