@@ -4,6 +4,8 @@
         "**/*.test.ts",
         "**/*.spec.ts",
         "**/__tests__/*",
-        "**/node_modules/*"
+        "**/node_modules/*",
+        "**/loadTests/*",
+        "*.js"
     ]
 }

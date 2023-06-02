@@ -6,3 +6,4 @@ coverage
 load-test-report.html
 *.js
 .vscode/
+*-load-test-report.html
