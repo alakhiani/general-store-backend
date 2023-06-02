@@ -3,7 +3,9 @@ import { Config } from '@jest/types';
 const config: Config.InitialOptions = {
   automock: false, // Dangerous, be very careful with using this, all imported modules will be automatically mocked, perhaps even the one you are trying to test and need the real workflow
   collectCoverage: true,
-  collectCoverageFrom: ['**/src/**/*.ts'],
+  collectCoverageFrom: [
+    'src/**/*.spec.ts',
+  ],
   coverageThreshold: {
     global: {
       branches: 70,
@@ -21,6 +23,11 @@ const config: Config.InitialOptions = {
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: './tsconfig.json' }],
   },
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/dist/',
+    '/coverage/',
+  ]
 };
 
 export default config;
