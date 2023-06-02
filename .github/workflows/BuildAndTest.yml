@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    environment: Testing
+    environment: testing
 
     strategy:
       matrix:
