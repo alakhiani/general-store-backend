@@ -5,5 +5,6 @@ dist/
 coverage
 load-test-report.html
 *.js
+!*.load.test.js
 .vscode/
 *-load-test-report.html
