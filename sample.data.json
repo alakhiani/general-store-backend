@@ -1,0 +1,44 @@
+[
+    {
+        "name": "Pencil",
+        "price": 1.89,
+        "description": "A traditional wooden pencil for writing and drawing.",
+        "imageUrl": "/images/products/pencil.png"
+    },
+    {
+        "name": "Ruler",
+        "price": 3.99,
+        "description": "A measuring tool used for drawing straight lines or measuring lengths.",
+        "imageUrl": "/images/products/ruler.png"
+    },
+    {
+        "name": "Markers",
+        "price": 6.99,
+        "description": "A set of colorful markers for drawing and highlighting.",
+        "imageUrl": "/images/products/markers.png"
+    },
+    {
+        "name": "Compass",
+        "price": 4.25,
+        "description": "A very useful tool for when you get lost.",
+        "imageUrl": "/images/products/compass.png"
+    },
+    {
+        "name": "Luxury Pen",
+        "price": 20.50,
+        "description": "A ballpoint pen made with high end materials.",
+        "imageUrl": "/images/products/pen.png"
+    },
+    {
+        "name": "Eraser",
+        "price": 2.75,
+        "description": "An eraser that can be used to erase lead pencil or ink pen content.",
+        "imageUrl": "/images/products/eraser.png"
+    },
+    {
+        "name": "Advanced Compass",
+        "price": 17.75,
+        "description": "A new model of the original and popular compass, with magnetic interference resistance, make it more accurate.",
+        "imageUrl": "/images/products/compass.png"
+    }
+]
